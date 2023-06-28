@@ -13,6 +13,10 @@ build: clean
 	python setup.py bdist_wheel
 
 clean:
-	@rm -rf .pytest_cache/ .mypy_cache/ junit/ build/ dist/
-	@find . -not -path './.venv*' -path '*/__pycache__*' -delete
-	@find . -not -path './.venv*' -path '*/*.egg-info*' -delete
+	@if exist .pytest_cache (rmdir /s /q .pytest_cache)
+	@if exist .mypy_cache (rmdir /s /q .mypy_cache)
+	@if exist junit (rmdir /s /q junit)
+	@if exist build (rmdir /s /q build)
+	@if exist dist (rmdir /s /q dist)
+	@if exist turkey_eq.egg-info (rmdir /s /q turkey_eq.egg-info)
+	@for /r %%i in (pycache) do @if exist "%%i" del /s /q "%%i"

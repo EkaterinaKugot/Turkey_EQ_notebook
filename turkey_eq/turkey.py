@@ -206,24 +206,17 @@ def retrieve_data_multiple_source(files, type_d, times=[]):
         datas[time] = _merge_structured_arrays(datas[time])
     return datas
 
-def plot_maps(prod_files, prods, epc, clims=None, times=None, scale=1):
+def plot_maps(prod_files, prods, epc, clims=None, times=None, scale=1, nrows=1, ncols=3):
     if clims:
         C_LIMITS = clims
     else:
         C_LIMITS ={
-            'ROTI': [0,0.5*scale,'TECu/min'],
-            '2-10 minute TEC variations': [-0.4*scale,0.4*scale,'TECu'],
-            '10-20 minute TEC variations': [-0.6*scale,0.6*scale,'TECu'],
-            '20-60 minute TEC variations': [-1*scale,1*scale,'TECu'],
-            'tec': [0,50*scale,'TECu/min'],
-            'tec_adjusted': [0,50*scale,'TECu'],
+            'ROTI': [0,0.5*scale,'TECu/min']
         }
     if times:
         pass
     else:
-        times = [datetime(2023, 2, 6, 10, 25),
-                 datetime(2023, 2, 6, 10, 40),
-                 datetime(2023, 2, 6, 10, 45, 0)]
+        times = [datetime(2023, 2, 6, 10, 25)] 
     times = [t.replace(tzinfo=t.tzinfo or _UTC) for t in times]
     for files in zip(*prod_files):
         data = retrieve_data_multiple_source(files, prods[files[0]], times)
@@ -232,12 +225,19 @@ def plot_maps(prod_files, prods, epc, clims=None, times=None, scale=1):
     #             use_alpha=True,
                  lat_limits=(25, 50),
                  lon_limits=(25, 50),
+                 nrows=nrows,
+                 ncols=ncols,           
                  sort=True,
                  markers=[epc],
                  clims=C_LIMITS)
         
+FILES_PRODUCT_10_24 = {"./roti_10_24.h5": "ROTI",}
+        
 
-
+plot_maps([FILES_PRODUCT_10_24],
+          FILES_PRODUCT_10_24,
+          EPICENTERS['10:24'], 
+          ncols=3)
 
 
 
@@ -547,7 +547,7 @@ def get_dist_time(data, eq_location, direction='all'):
         c.extend(vals)
     return x, y, c
 
-def plot_distance_time(x, y, c, ptype, sort = True, line=dict(), clims=C_LIMITS, dmax=1750, data=[]):
+def plot_distance_time(x, y, c, ptype, epcs, sort = True, line=dict(), clims=C_LIMITS, dmax=1750, data=[]):
     c_abs = [abs(_c) for _c in c]
     if sort:
         x = [i for _, i in sorted(zip(c_abs, x))]
@@ -572,7 +572,7 @@ def plot_distance_time(x, y, c, ptype, sort = True, line=dict(), clims=C_LIMITS,
     plt.xlim(times[0], times[-1])
     plt.ylim(0, dmax)
     # plot vertical lines for earthquake times
-    for epc, params in EPICENTERS.items():
+    for epc, params in epcs.items():
         plt.axvline(x=params['time'], color='black', linewidth=3)
     cbar.ax.set_ylabel( clims[ptype][2], rotation=-90, va="bottom")
     plot_ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))

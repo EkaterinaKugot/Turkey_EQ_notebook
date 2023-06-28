@@ -19,7 +19,7 @@ def test_file():
 
     try:
         plot_map(times, data, 'ROTI', (25, 50), (25, 50), sort=True, markers=[EPICENTERS['10:24']],
-                 clims=C_LIMITS)
+                 clims=C_LIMITS, test_mod=True)
     except:
         answers[0] = False
 

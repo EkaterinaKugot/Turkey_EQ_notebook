@@ -64,7 +64,7 @@ EPICENTERS = {'10:24': {'lat': 38.016,
 times = [datetime(2023, 2, 6, 10, 25)] 
 times = [t.replace(tzinfo=t.tzinfo or _UTC) for t in times]
 
-#Получим данные из roti_10_24.h5 по заданому времени и типу файла ROTI 
+#Получим данные из roti_10_24.h5 по заданному времени и типу файла ROTI 
 data = retrieve_data("./roti_10_24.h5", "ROTI", times)
 
 #Занесем в словарь, где ключ - тип файлам, значение - полученные данные

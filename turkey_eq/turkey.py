@@ -16,15 +16,6 @@ from pathlib import Path
 from scipy.stats import norm
 from scipy.interpolate import UnivariateSpline
 
-C_LIMITS ={
-    'ROTI': [-0,0.5,'TECu/min'],
-    '2-10 minute TEC variations': [-0.2,0.2,'TECu'],
-    '10-20 minute TEC variations': [-0.4,0.4,'TECu'],
-    '20-60 minute TEC variations': [-0.6,0.6,'TECu'],
-    'tec': [0,50,'TECu/min'],
-    'tec_adjusted': [0,50,'TECu'],
-}
-
 DEFAULT_PARAMS = {'font.size': 20,
                   'figure.dpi': 300,
                   'font.family': 'sans-serif',
@@ -44,14 +35,6 @@ DEFAULT_PARAMS = {'font.size': 20,
                   'ytick.labelsize' : 20}
 
 TIME_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
-
-EPICENTERS = {'01:17': {'lat': 37.220,
-                        'lon': 37.019,
-                        'time': datetime(2023, 2, 6, 1, 17, 34)},
-              '10:24': {'lat': 38.016,
-                        'lon': 37.206,
-                        'time': datetime(2023, 2, 6, 10, 24, 50)}
-             }
 
 _UTC = tz.gettz('UTC')
 
@@ -77,12 +60,13 @@ def plot_map(plot_times, data, type_d,
              lon_limits=(-180, 180),
              lat_limits=(-90, 90),
              nrows=1,
-             ncols=3,
+             ncols=1,
              markers=[],
              sort=False,
              use_alpha=False,
-             clims=C_LIMITS,
-             savefig='', test_mod=False):
+             clims=None,
+             savefig='',
+             test_mod=False):
     """
     Plotting data
     input - <time> string type time from SIMuRG map file
@@ -207,39 +191,24 @@ def retrieve_data_multiple_source(files, type_d, times=[]):
         datas[time] = _merge_structured_arrays(datas[time])
     return datas
 
-def plot_maps(prod_files, prods, epc, clims=None, times=None, scale=1):
-    if clims:
-        C_LIMITS = clims
-    else:
-        C_LIMITS ={
-            'ROTI': [0,0.5*scale,'TECu/min'],
-            '2-10 minute TEC variations': [-0.4*scale,0.4*scale,'TECu'],
-            '10-20 minute TEC variations': [-0.6*scale,0.6*scale,'TECu'],
-            '20-60 minute TEC variations': [-1*scale,1*scale,'TECu'],
-            'tec': [0,50*scale,'TECu/min'],
-            'tec_adjusted': [0,50*scale,'TECu'],
-        }
-    if times:
-        pass
-    else:
-        times = [datetime(2023, 2, 6, 10, 25),
-                 datetime(2023, 2, 6, 10, 40),
-                 datetime(2023, 2, 6, 10, 45, 0)]
+def plot_maps(prod_files, prods, epc, clims, times, lat_limits, lon_limits, nrows, ncols, scale=1):
+    C_LIMITS = clims
+    if scale != 1:
+        for k in C_LIMITS:
+            C_LIMITS[k][0] = C_LIMITS[k][0]*scale
+            C_LIMITS[k][1] = C_LIMITS[k][1]*scale
     times = [t.replace(tzinfo=t.tzinfo or _UTC) for t in times]
     for files in zip(*prod_files):
         data = retrieve_data_multiple_source(files, prods[files[0]], times)
         data = {prods[files[0]]: data}
         plot_map(times, data, prods[files[0]],
-    #             use_alpha=True,
-                 lat_limits=(25, 50),
-                 lon_limits=(25, 50),
+                 lat_limits=lat_limits,
+                 lon_limits=lon_limits,
+                 nrows=nrows,
+                 ncols=ncols,           
                  sort=True,
                  markers=[epc],
                  clims=C_LIMITS)
-        
-
-
-
 
 
 def get_sites_coords(local_file, exclude_sites = [],
@@ -548,7 +517,7 @@ def get_dist_time(data, eq_location, direction='all'):
         c.extend(vals)
     return x, y, c
 
-def plot_distance_time(x, y, c, ptype, sort = True, line=dict(), clims=C_LIMITS, dmax=1750, data=[]):
+def plot_distance_time(x, y, c, ptype, epcs, sort = True, line=dict(), clims=None, dmax=1750, data=[]):
     c_abs = [abs(_c) for _c in c]
     if sort:
         x = [i for _, i in sorted(zip(c_abs, x))]
@@ -573,7 +542,7 @@ def plot_distance_time(x, y, c, ptype, sort = True, line=dict(), clims=C_LIMITS,
     plt.xlim(times[0], times[-1])
     plt.ylim(0, dmax)
     # plot vertical lines for earthquake times
-    for epc, params in EPICENTERS.items():
+    for epc, params in epcs.items():
         plt.axvline(x=params['time'], color='black', linewidth=3)
     cbar.ax.set_ylabel( clims[ptype][2], rotation=-90, va="bottom")
     plot_ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))

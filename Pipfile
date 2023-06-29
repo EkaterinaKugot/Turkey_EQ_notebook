@@ -12,6 +12,7 @@ scipy = "*"
 cartopy = "*"
 python-dateutil = "*"
 pathlib = "*"
+pytest = "*"
 
 [dev-packages]
 

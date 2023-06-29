@@ -115,6 +115,9 @@ plot_maps([FILES_PRODUCT_10_24],
           EPICENTERS['10:24'],          
           clims=C_LIMITS,
           times=times,
+          lat_limits=(25, 50),
+          lon_limits=(25, 50),
+          nrows=1,
           ncols=2)
 ```
 ![dtec_2_10_10_24.h5](./images/2.jpg)

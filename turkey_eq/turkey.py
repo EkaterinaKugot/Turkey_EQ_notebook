@@ -65,7 +65,8 @@ def plot_map(plot_times, data, type_d,
              sort=False,
              use_alpha=False,
              clims=None,
-             savefig=''):
+             savefig='',
+             test_mod=False):
     """
     Plotting data
     input - <time> string type time from SIMuRG map file
@@ -139,10 +140,11 @@ def plot_map(plot_times, data, type_d,
             #If you want to save file uncomment next line
             #plt.savefig(os.path.join(directory,time[:-7].replace(':','-')+'.png') , fmt = 'png')
 
-    if savefig:
-        plt.savefig(savefig)
-    else:
-        plt.show()
+    if not test_mod:
+        if savefig:
+            plt.savefig(savefig)
+        else:
+            plt.show()
     plt.close()
     #plt.tight_layout()
     plt.rcdefaults()

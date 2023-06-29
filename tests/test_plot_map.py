@@ -11,6 +11,20 @@ _UTC = tz.gettz('UTC')
 times = [datetime(2023, 2, 6, 10, 25), datetime(2023, 2, 6, 10, 40), datetime(2023, 2, 6, 10, 45, 0)]
 times = [t.replace(tzinfo=t.tzinfo or _UTC) for t in times]
 
+C_LIMITS ={
+    'ROTI': [-0,0.5,'TECu/min'],
+    '2-10 minute TEC variations': [-0.2,0.2,'TECu'],
+    '10-20 minute TEC variations': [-0.4,0.4,'TECu'],
+    '20-60 minute TEC variations': [-0.6,0.6,'TECu'],
+    'tec': [0,50,'TECu/min'],
+    'tec_adjusted': [0,50,'TECu'],
+}
+
+EPICENTERS = {'10:24': {'lat': 38.016,
+                        'lon': 37.206,
+                        'time': datetime(2023, 2, 6, 10, 24, 50)}
+             }
+
 
 def test_file():
     answers = [True, True, False]

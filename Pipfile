@@ -1,7 +1,7 @@
 [[source]]
-url = "https://pypi.org/simple"
+url = "https://test.pypi.org/simple"
 verify_ssl = true
-name = "pypi"
+name = "turkey-eq"
 
 [packages]
 requests = "*"

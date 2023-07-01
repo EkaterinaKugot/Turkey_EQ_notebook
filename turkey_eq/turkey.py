@@ -191,7 +191,7 @@ def retrieve_data_multiple_source(files, type_d, times=[]):
         datas[time] = _merge_structured_arrays(datas[time])
     return datas
 
-def plot_maps(prod_files, prods, epc, clims, times, lat_limits, lon_limits, nrows, ncols, scale=1):
+def plot_maps(prod_files, prods, epc, clims, times, lat_limits, lon_limits, nrows, ncols, scale=1, test_mod=False):
     C_LIMITS = clims
     if scale != 1:
         for k in C_LIMITS:
@@ -208,7 +208,8 @@ def plot_maps(prod_files, prods, epc, clims, times, lat_limits, lon_limits, nrow
                  ncols=ncols,           
                  sort=True,
                  markers=[epc],
-                 clims=C_LIMITS)
+                 clims=C_LIMITS,
+                 test_mod=test_mod)
 
 
 def get_sites_coords(local_file, exclude_sites = [],

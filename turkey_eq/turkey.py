@@ -191,14 +191,16 @@ def retrieve_data_multiple_source(files, type_d, times=[]):
         datas[time] = _merge_structured_arrays(datas[time])
     return datas
 
-def plot_maps(prod_files, prods, epc, clims, times, lat_limits, lon_limits, nrows, ncols, scale=1, test_mod=False):
+def plot_maps(prod_files, prods, epc, clims, times, lat_limits, lon_limits, nrows, ncols, savefig='', scale=1, test_mod=False):
     C_LIMITS = clims
     if scale != 1:
         for k in C_LIMITS:
             C_LIMITS[k][0] = C_LIMITS[k][0]*scale
             C_LIMITS[k][1] = C_LIMITS[k][1]*scale
     times = [t.replace(tzinfo=t.tzinfo or _UTC) for t in times]
+    n = 1
     for files in zip(*prod_files):
+        n += 1
         data = retrieve_data_multiple_source(files, prods[files[0]], times)
         data = {prods[files[0]]: data}
         plot_map(times, data, prods[files[0]],
@@ -209,6 +211,7 @@ def plot_maps(prod_files, prods, epc, clims, times, lat_limits, lon_limits, nrow
                  sort=True,
                  markers=[epc],
                  clims=C_LIMITS,
+                 savefig=f"{savefig}_{n}.jpg", 
                  test_mod=test_mod)
 
 

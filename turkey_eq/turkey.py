@@ -632,7 +632,10 @@ def convert_files_to_data(files, val_field='Zerror', start=None, fin=None):
                       }
     return map_data
 
-def plot_all_sats(local_file, site, product, shift=0.5):
+
+
+
+def plot_all_sats(local_file, site, product, epc, span, shift=0.5):
     f = h5py.File(local_file)
     plt.figure(figsize=(10, 13))
     plot_ax = plt.axes()
@@ -648,14 +651,13 @@ def plot_all_sats(local_file, site, product, shift=0.5):
         locs.append(i)
         label_sats.append(sat)
     plt.yticks(locs, label_sats)
-    plt.xlim(datetime(2023, 2, 6), datetime(2023, 2, 7))
-    #plt.ylim(0, 3.1415 * 0.5)
+    plt.xlim(datetime.strptime(span[0], '%Y-%m-%d %H:%M:%S'), datetime.strptime(span[1], '%Y-%m-%d %H:%M:%S'))
     plt.grid()
-    plot_ax.axvline(x=datetime(2023, 2, 6, 10, 24), color='red')
-    plot_ax.axvline(x=datetime(2023, 2, 6, 1, 17), color='red')
+    x = datetime.strptime(epc['time'], '%Y-%m-%d %H:%M:%S')
+    plot_ax.axvline(x=x, color='red')
     plot_ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
 
-def plot_sites(local_file, plot_sat, sites, product, shift=0.5):
+def plot_sites(local_file, plot_sat, sites, product, epc, span, shift=0.5):
     f = h5py.File(local_file)
     plt.figure(figsize=(10, 13))
     plot_ax = plt.axes()
@@ -665,7 +667,6 @@ def plot_sites(local_file, plot_sat, sites, product, shift=0.5):
     for site in f:
         if not site in sites:
             continue
-        print(site, np.degrees(f[site].attrs['lat']), np.degrees(f[site].attrs['lon']) )
         for sat in f[site]:
             if not sat == plot_sat:
                 continue
@@ -676,11 +677,10 @@ def plot_sites(local_file, plot_sat, sites, product, shift=0.5):
             locs.append(i)
             label_sats.append(site)
     plt.yticks(locs, label_sats)
-    plt.xlim(datetime(2023, 2, 6, 10), datetime(2023, 2, 6, 11))
-    #plt.ylim(0, 3.1415 * 0.5)
+    plt.xlim(datetime.strptime(span[0], '%Y-%m-%d %H:%M:%S'), datetime.strptime(span[1], '%Y-%m-%d %H:%M:%S'))
     plt.grid()
-    plot_ax.axvline(x=datetime(2023, 2, 6, 10, 24), color='red')
-    plot_ax.axvline(x=datetime(2023, 2, 6, 1, 17), color='red')
+    x = datetime.strptime(epc['time'], '%Y-%m-%d %H:%M:%S')
+    plot_ax.axvline(x=x, color='red')
     plot_ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
 
 

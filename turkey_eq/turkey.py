@@ -535,7 +535,8 @@ def plot_distance_time(x, y, c, ptype, epcs, sort = True, clims=None, dmax=1750,
     plt.xlabel('UTC for February 6, 2023')
     plt.xlim(times[0], times[-1])
     plt.ylim(0, dmax)
-    plt.axvline(x=epcs['time'], color='black', linewidth=3)
+    x = datetime.strptime(epcs['time'], '%Y-%m-%d %H:%M:%S')
+    plt.axvline(x=x, color='black', linewidth=3)
     cbar.ax.set_ylabel( clims[ptype][2], rotation=-90, va="bottom")
     plot_ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
 
@@ -544,6 +545,9 @@ def plot_line(velocity, start, style='solid'):
     line = [velocity * timestep * i for i in range(13)]
     dtimes = [start + i * timedelta(0, timestep) for i in range(13)]
     plt.plot(dtimes, line, linestyle=style, color='black', zorder=5, linewidth=4)
+
+
+
 
 
 def spline_detrend(data, sm_f = 8):

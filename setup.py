@@ -13,7 +13,7 @@ def read_pipenv_dependencies(fname):
 if __name__ == '__main__':
     setup(
         name='turkey_eq',
-        version='1.5',
+        version='1.6',
         description='Package for practical work on Turkey_EQ.',
         license='MIT',
         url='https://github.com/EkaterinaKugot/Turkey_EQ_notebook.git',

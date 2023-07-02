@@ -395,8 +395,6 @@ def get_dtecs(data,
 
 
 
-
-
 RE_meters = 6371000
 
 def sub_ionospheric(s_lat, s_lon, hm, az, el, R=RE_meters):
@@ -458,14 +456,11 @@ def fit_and_plot_distribution(data, xmin=0, xmax=4000):
     plt.figure(figsize=(18, 9))
     mu, std = norm.fit(data)
     plt.grid()
-    # Plot the histogram.
     counts, edges, bars = plt.hist(data, bins=20, density=True, alpha=0.6, color='g')
-    #plt.bar_label(bars)
     y = ((1 / (np.sqrt(2 * np.pi) * std)) *
          np.exp(-0.5 * (1 / std * (edges - mu))**2))
-    # Plot the PDF.
     x = np.linspace(xmin, xmax, 100)
-    p = norm.pdf(x, mu, std) # * len(data) * len(data)
+    p = norm.pdf(x, mu, std)
     plt.plot(x, p, 'k', linewidth=3, color='black')
     title = "Fit results: mean = %.2f m/s,  STD = %.2f m/s"  % (mu, std)
     plt.xlabel('velocity, m/s')
@@ -521,33 +516,26 @@ def get_dist_time(data, eq_location, direction='all'):
         c.extend(vals)
     return x, y, c
 
-def plot_distance_time(x, y, c, ptype, epcs, sort = True, line=dict(), clims=None, dmax=1750, data=[]):
+def plot_distance_time(x, y, c, ptype, epcs, sort = True, clims=None, dmax=1750, data=[]):
     c_abs = [abs(_c) for _c in c]
     if sort:
         x = [i for _, i in sorted(zip(c_abs, x))]
         y = [i for _, i in sorted(zip(c_abs, y))]
         c = [i for _, i in sorted(zip(c_abs, c))]
-        #x = [i for _, i in sorted(zip(c, x))]
-        #y = [i for _, i in sorted(zip(c, y))]
-        #c.sort()
 
     times = [t for t in data]
     times.sort()
     plt.figure(figsize=(18, 5))
     plt.rcParams.update(DEFAULT_PARAMS)
     plot_ax = plt.axes()
-    #c[c<0.1] = np.nan
     plt.scatter(x, y, c=c, cmap='jet')
     cbar = plt.colorbar()
     plt.clim(clims[ptype][0], clims[ptype][1])
     plt.ylabel('Distance, km')
     plt.xlabel('UTC for February 6, 2023')
-    print(times[0], times[-1])
     plt.xlim(times[0], times[-1])
     plt.ylim(0, dmax)
-    # plot vertical lines for earthquake times
-    for epc, params in epcs.items():
-        plt.axvline(x=params['time'], color='black', linewidth=3)
+    plt.axvline(x=epcs['time'], color='black', linewidth=3)
     cbar.ax.set_ylabel( clims[ptype][2], rotation=-90, va="bottom")
     plot_ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
 
@@ -556,7 +544,6 @@ def plot_line(velocity, start, style='solid'):
     line = [velocity * timestep * i for i in range(13)]
     dtimes = [start + i * timedelta(0, timestep) for i in range(13)]
     plt.plot(dtimes, line, linestyle=style, color='black', zorder=5, linewidth=4)
-
 
 
 def spline_detrend(data, sm_f = 8):

@@ -156,4 +156,17 @@ pip install ./dist/turkey_eq-1.0-py3-none-any.whl
 pip list | grep turkey_eq
 ```
 
+## Contributors
+<a href="https://github.com/EkaterinaKugot/Turkey_EQ_practice/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=EkaterinaKugot/Turkey_EQ_practice" />
+</a>
+
+## Контактная информация
+:wink:EkaterinaKugot - lika.kugot@gmail.com 
+
+:relaxed:Yulya-S - yulya_shabsnova_03@mail.ru
+
+## Лицензия
+MIT
+
 
